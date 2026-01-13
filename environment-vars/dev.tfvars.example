@@ -1,0 +1,58 @@
+################################################################
+# Global Context Variables
+################################################################
+aws_profile   = "your-aws-profile"
+env           = "dev"   # dev, stg, prd
+project       = "demo"  # 4 characters max
+functionality = "notifications"
+
+################################################################
+# Amazon SNS – Topic Configuration
+################################################################
+fifo_topic                  = true
+kms_master_key_id           = "alias/aws/sns"
+fifo_throughput_scope       = "MessageGroup"  # MessageGroup or Topic
+content_based_deduplication = true
+tracing_config              = "PassThrough"   # PassThrough or Active
+
+################################################################
+# Amazon SQS – Queue Subscriptions Configuration
+################################################################
+queues = {
+  # Example: API processing queue
+  "api" = {
+    fifo_queue                 = true
+    content_based_deduplication = true
+    visibility_timeout_seconds = 30
+    message_retention_seconds  = 345600  # 4 days
+    filter_policy = {
+      destination = ["API"]
+    }
+    filter_policy_scope  = "MessageAttributes"
+    raw_message_delivery = false
+  }
+  
+  # Example: Email notifications queue
+  "email" = {
+    fifo_queue                 = true
+    content_based_deduplication = true
+    visibility_timeout_seconds = 60
+    filter_policy = {
+      destination = ["EMAIL"]
+      priority   = ["HIGH", "MEDIUM"]
+    }
+    filter_policy_scope  = "MessageAttributes"
+    raw_message_delivery = false
+  }
+  
+  # Example: Audit queue (receives all messages)
+  "audit" = {
+    fifo_queue                 = true
+    content_based_deduplication = true
+    visibility_timeout_seconds = 300
+    message_retention_seconds  = 1209600  # 14 days
+    filter_policy = {}  # No filters - receives all messages
+    filter_policy_scope  = "MessageAttributes"
+    raw_message_delivery = true
+  }
+}
