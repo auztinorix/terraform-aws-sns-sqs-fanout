@@ -29,6 +29,7 @@ variable "kms_master_key_id" {
 variable "tracing_config" {
   description = "Tracing configuration for SNS topic"
   type        = string
+
   validation {
     condition     = contains(["PassThrough", "Active"], var.tracing_config)
     error_message = "Tracing config must be either 'PassThrough' or 'Active'."
@@ -43,4 +44,10 @@ variable "fifo_throughput_scope" {
     condition     = !var.fifo_topic || contains(["MessageGroup", "Topic"], var.fifo_throughput_scope)
     error_message = "FIFO throughput scope must be either 'MessageGroup' or 'Topic' when fifo_topic is true."
   }
+}
+
+variable "tags" {
+  description = "Additional tags specific to this resource"
+  type        = map(string)
+  default     = {}
 }

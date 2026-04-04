@@ -14,4 +14,11 @@ locals {
       key => "${local.name_prefix}-${key}-${var.functionality}"
     }
   }
+
+  # Common tags applied to all resources
+  common_tags = merge(var.tags, {
+    Environment = var.env
+    Project     = var.project
+    ManagedBy   = "terraform"
+  })
 }

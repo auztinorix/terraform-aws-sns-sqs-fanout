@@ -1,4 +1,4 @@
-# Terraform AWS SNS-SQS Fan-out
+# Terraform AWS SNS-SQS Fanout
 
 [![Terraform](https://img.shields.io/badge/Terraform-1.14.1+-623CE4?logo=terraform)](https://www.terraform.io/)
 [![AWS Provider](https://img.shields.io/badge/AWS_Provider-~6.0-FF9900?logo=amazon-aws)](https://registry.terraform.io/providers/hashicorp/aws/latest)
@@ -15,7 +15,7 @@ El objetivo es demostrar una arquitectura **orientada a eventos**, desacoplada, 
 
 Este proyecto tiene como finalidad:
 
-- Proveer un **ejemplo claro y modular** del patrón SNS → SQS Fan-out
+- Proveer un **ejemplo claro y modular** del patrón SNS → SQS Fanout
 - Servir como **arquitectura de referencia** para soluciones event-driven
 - Compartir **buenas prácticas de Terraform y AWS**
 - Contribuir al aprendizaje de la comunidad AWS
@@ -352,6 +352,6 @@ Si este proyecto te ayudó, considera:
 [![GitHub Stars](https://img.shields.io/github/stars/auztinorix/terraform-aws-sns-sqs-fanout?style=social)](https://github.com/auztinorix/terraform-aws-sns-sqs-fanout)
 [![GitHub Forks](https://img.shields.io/github/forks/auztinorix/terraform-aws-sns-sqs-fanout?style=social)](https://github.com/auztinorix/terraform-aws-sns-sqs-fanout/fork)
 
-[⬆️ Volver arriba](#terraform-aws-sns-sqs-fan-out)
+[⬆️ Volver arriba](#terraform-aws-sns-sqs-fanout)
 
 </div>

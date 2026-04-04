@@ -1,7 +1,7 @@
 ################################################################
 # Global Context Variables
 ################################################################
-aws_profile   = "your-aws-profile"
+aws_profile   = "default"
 env           = "dev"   # dev, stg, prd
 project       = "demo"  # 4 characters max
 functionality = "notifications"
@@ -19,40 +19,40 @@ tracing_config              = "PassThrough"   # PassThrough or Active
 # Amazon SQS – Queue Subscriptions Configuration
 ################################################################
 queues = {
-  # Example: API processing queue
+  # API processing queue (FIFO with message filtering)
   "api" = {
-    fifo_queue                 = true
+    fifo_queue                  = true
     content_based_deduplication = true
-    visibility_timeout_seconds = 30
-    message_retention_seconds  = 345600  # 4 days
+    visibility_timeout_seconds  = 30
+    message_retention_seconds   = 345600  # 4 days
     filter_policy = {
       destination = ["API"]
     }
     filter_policy_scope  = "MessageAttributes"
     raw_message_delivery = false
   }
-  
-  # Example: Email notifications queue
+
+  # Email notifications queue
   "email" = {
-    fifo_queue                 = true
+    fifo_queue                  = true
     content_based_deduplication = true
-    visibility_timeout_seconds = 60
+    visibility_timeout_seconds  = 60
     filter_policy = {
       destination = ["EMAIL"]
-      priority   = ["HIGH", "MEDIUM"]
+      priority    = ["HIGH", "MEDIUM"]
     }
     filter_policy_scope  = "MessageAttributes"
     raw_message_delivery = false
   }
-  
-  # Example: Audit queue (receives all messages)
+
+  # Audit queue (receives ALL messages, no filters)
   "audit" = {
-    fifo_queue                 = true
+    fifo_queue                  = true
     content_based_deduplication = true
-    visibility_timeout_seconds = 300
-    message_retention_seconds  = 1209600  # 14 days
-    filter_policy = {}  # No filters - receives all messages
-    filter_policy_scope  = "MessageAttributes"
-    raw_message_delivery = true
+    visibility_timeout_seconds  = 300
+    message_retention_seconds   = 1209600  # 14 days max
+    filter_policy               = {}
+    filter_policy_scope         = "MessageAttributes"
+    raw_message_delivery        = true
   }
 }

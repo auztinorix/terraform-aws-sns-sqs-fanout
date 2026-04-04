@@ -2,13 +2,17 @@
 # Global Context Variables
 ################################################################
 variable "aws_profile" {
-  description = "AWS profile"
+  description = "AWS CLI profile name from ~/.aws/credentials used to authenticate with AWS"
   type        = string
-  default     = "own-aws-environment"
+
+  validation {
+    condition     = length(var.aws_profile) > 0
+    error_message = "AWS profile must not be empty."
+  }
 }
 
 variable "env" {
-  description = "Environment's name"
+  description = "Deployment environment identifier (dev, qas, stg, prd). Used as prefix in resource naming."
   type        = string
 
   validation {
@@ -18,42 +22,53 @@ variable "env" {
 }
 
 variable "project" {
-  description = "Project's name (exactly 4 characters, organizational standard)"
+  description = "Project identifier (exactly 4 lowercase alphanumeric characters). Used as prefix in resource naming."
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z0-9-]{4}$", var.project))
-    error_message = "Project name must be 4 characters, lowercase letters, numbers and hyphens only."
+    condition     = can(regex("^[a-z][a-z0-9]{3}$", var.project))
+    error_message = "Project name must be exactly 4 characters, starting with a letter, lowercase alphanumeric only."
   }
 }
 
 variable "functionality" {
-  description = "Functionality's name"
+  description = "Functionality or domain name for the messaging resources (e.g. 'orders', 'notifications'). Used in resource naming."
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z0-9-]{2,50}$", var.functionality))
-    error_message = "Functionality name must be 2-50 characters, lowercase letters, numbers and hyphens only."
+    condition     = can(regex("^[a-z][a-z0-9-]{1,49}$", var.functionality))
+    error_message = "Functionality name must be 2-50 characters, start with a letter, lowercase letters, numbers and hyphens only."
   }
+}
+
+variable "tags" {
+  description = "Global tags to apply to all resources. Merged with auto-generated tags (Environment, Project, ManagedBy)."
+  type        = map(string)
+  default     = {}
 }
 
 ################################################################
 # Amazon SNS – Topic Configuration
 ################################################################
 variable "fifo_topic" {
-  description = "Is the SNS topic FIFO?"
+  description = "Whether to create a FIFO SNS topic. FIFO guarantees message ordering and exactly-once delivery."
   type        = bool
   default     = false
 }
 
 variable "kms_master_key_id" {
-  description = "KMS Master Key ID for the SNS topic"
+  description = "KMS key ID or alias ARN for SNS topic server-side encryption (e.g. 'alias/aws/sns' for AWS-managed key)"
   type        = string
   default     = "alias/aws/sns"
+
+  validation {
+    condition     = length(var.kms_master_key_id) > 0
+    error_message = "KMS master key ID must not be empty."
+  }
 }
 
 variable "fifo_throughput_scope" {
-  description = "FIFO throughput scope for the SNS topic"
+  description = "Scope for FIFO throughput quota. 'MessageGroup' allows 300 msg/s per group; 'Topic' applies the limit globally."
   type        = string
   default     = "MessageGroup"
 
@@ -64,7 +79,7 @@ variable "fifo_throughput_scope" {
 }
 
 variable "tracing_config" {
-  description = "Tracing configuration for the SNS topic"
+  description = "AWS X-Ray tracing mode for the SNS topic. 'Active' enables tracing; 'PassThrough' only propagates trace headers."
   type        = string
   default     = "PassThrough"
 
@@ -75,7 +90,7 @@ variable "tracing_config" {
 }
 
 variable "content_based_deduplication" {
-  description = "Enable content-based deduplication for FIFO topics"
+  description = "Enable automatic content-based deduplication for FIFO topics. When true, message body is used for deduplication instead of requiring an explicit DeduplicationId."
   type        = bool
   default     = false
 
@@ -89,7 +104,7 @@ variable "content_based_deduplication" {
 # Amazon SQS – Queue Subscriptions Configuration
 ################################################################
 variable "queues" {
-  description = "Map of SQS queues configurations"
+  description = "Map of SQS queue configurations to subscribe to the SNS topic. Each key becomes part of the queue name."
   type = map(object({
     visibility_timeout_seconds  = optional(number, 30)
     message_retention_seconds   = optional(number, 345600)
@@ -103,6 +118,21 @@ variable "queues" {
     filter_policy               = optional(map(list(string)), {})
     raw_message_delivery        = optional(bool, false)
   }))
+
+  # At least one queue must be defined
+  validation {
+    condition     = length(var.queues) > 0
+    error_message = "At least one queue must be defined."
+  }
+
+  # Queue keys must follow naming conventions
+  validation {
+    condition = alltrue([
+      for key in keys(var.queues) :
+      can(regex("^[a-z][a-z0-9-]{0,49}$", key))
+    ])
+    error_message = "Queue keys must start with a letter, contain only lowercase letters, numbers and hyphens, and be 1-50 characters."
+  }
 
   validation {
     condition = alltrue([

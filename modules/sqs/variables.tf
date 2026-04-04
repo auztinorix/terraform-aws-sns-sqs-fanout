@@ -66,8 +66,20 @@ variable "deduplication_scope" {
   }
 }
 
+variable "kms_master_key_id" {
+  description = "KMS key ID for SQS queue server-side encryption. Leave empty to use SQS-managed encryption (SSE-SQS)."
+  type        = string
+  default     = null
+}
+
 variable "allowed_publishers" {
   description = "List of SNS topic ARNs allowed to publish to this queue"
   type        = list(string)
   default     = []
+}
+
+variable "tags" {
+  description = "Additional tags specific to this resource"
+  type        = map(string)
+  default     = {}
 }

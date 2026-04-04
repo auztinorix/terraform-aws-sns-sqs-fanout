@@ -16,9 +16,9 @@ module "events_topic" {
 # SQS Queues - Event Consumers
 ################################################################
 module "event_queues" {
-  source   = "./modules/sqs"
-  for_each = var.queues
+  source = "./modules/sqs"
 
+  for_each                    = var.queues
   queue_name                  = "${local.event_names.queues[each.key]}-sqs"
   visibility_timeout_seconds  = each.value.visibility_timeout_seconds
   message_retention_seconds   = each.value.message_retention_seconds
@@ -35,12 +35,11 @@ module "event_queues" {
 # SNS Subscriptions - Fan-out Configuration
 ################################################################
 resource "aws_sns_topic_subscription" "event_consumers" {
-  for_each = var.queues
 
-  topic_arn = module.events_topic.arn
-  protocol  = "sqs"
-  endpoint  = module.event_queues[each.key].arn
-
+  for_each             = var.queues
+  topic_arn            = module.events_topic.arn
+  protocol             = "sqs"
+  endpoint             = module.event_queues[each.key].arn
   filter_policy        = jsonencode(each.value.filter_policy)
   filter_policy_scope  = each.value.filter_policy_scope
   raw_message_delivery = each.value.raw_message_delivery
