@@ -4,13 +4,13 @@ Este documento describe las decisiones de seguridad aplicadas en este proyecto, 
 
 Este repositorio está destinado a fines **educativos y demostrativos** y muestra las prácticas de seguridad recomendadas sin añadir complejidad operativa innecesaria.
 
---
+---
 
 ## 🔒 Cifrado en reposo
 
 Este proyecto habilita el cifrado en reposo para **Amazon SNS** y **Amazon SQS**, utilizando los mecanismos predeterminados y recomendados proporcionados por AWS.
 
---
+---
 
 ### 🔹 Cifrado de Amazon SNS
 
@@ -34,7 +34,7 @@ Amazon SQS utiliza **cifrado administrado por el servicio (SSE-SQS)**.
 
 Este es un enfoque común y recomendado cuando no se requiere un control de claves detallado.
 
---
+---
 
 ## 🧠 ¿Por qué diferentes modelos de cifrado?
 
