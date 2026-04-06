@@ -1,13 +1,13 @@
 ################################################################
-# Global Context Variables
+# Global Context
 ################################################################
 aws_profile   = "default"
-env           = "dev"   # dev, stg, prd
-project       = "demo"  # 4 characters max
+env           = "dev"   # dev, qas, stg, prd
+project       = "demo"  # 4 chars, lowercase alphanumeric
 functionality = "notifications"
 
 ################################################################
-# Amazon SNS – Topic Configuration
+# SNS Topic
 ################################################################
 fifo_topic                  = true
 kms_master_key_id           = "alias/aws/sns"
@@ -16,10 +16,10 @@ content_based_deduplication = true
 tracing_config              = "PassThrough"   # PassThrough or Active
 
 ################################################################
-# Amazon SQS – Queue Subscriptions Configuration
+# SQS Queues
 ################################################################
 queues = {
-  # API processing queue (FIFO with message filtering)
+  # API processing queue
   "api" = {
     fifo_queue                  = true
     content_based_deduplication = true
@@ -45,7 +45,7 @@ queues = {
     raw_message_delivery = false
   }
 
-  # Audit queue (receives ALL messages, no filters)
+  # Audit queue — receives all messages
   "audit" = {
     fifo_queue                  = true
     content_based_deduplication = true
