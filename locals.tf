@@ -1,5 +1,5 @@
 locals {
-  # Naming convention: {env}-{project}-{functionality} (e.g. dev-shop-orders)
+  # Naming prefix: {env}-{project} (e.g. dev-shop)
   name_prefix = "${var.env}-${var.project}"
 
   event_names = {
