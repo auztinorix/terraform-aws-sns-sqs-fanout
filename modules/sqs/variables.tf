@@ -1,13 +1,10 @@
-################################################################
-# Amazon SQS Queue Variables
-################################################################
 variable "queue_name" {
-  description = "The name of the SQS queue."
+  description = "Name of the SQS queue. The '.fifo' suffix is appended automatically when 'fifo_queue' is true."
   type        = string
 }
 
 variable "visibility_timeout_seconds" {
-  description = "Visibility timeout for the SQS queue in seconds"
+  description = "Time in seconds a message stays invisible after being read. Range: 0-43200 (12h). Should exceed your consumer function timeout."
   type        = number
 
   validation {
@@ -17,7 +14,7 @@ variable "visibility_timeout_seconds" {
 }
 
 variable "message_retention_seconds" {
-  description = "Number of seconds Amazon SQS retains a message"
+  description = "How long SQS retains undeleted messages in seconds. Range: 60-1209600 (14 days). AWS default: 345600 (4 days)."
   type        = number
 
   validation {
@@ -27,27 +24,27 @@ variable "message_retention_seconds" {
 }
 
 variable "max_message_size" {
-  description = "Limit of how many bytes a message can contain before Amazon SQS rejects it"
+  description = "Maximum message size in bytes. Range: 1024-262144 (1KB-256KB)."
   type        = number
 }
 
 variable "delay_seconds" {
-  description = "Time in seconds that the delivery of all messages in the queue will be delayed"
+  description = "Initial delay in seconds before messages become visible in the queue. Range: 0-900 (15 min)."
   type        = number
 }
 
 variable "receive_wait_time_seconds" {
-  description = "Time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning"
+  description = "Seconds ReceiveMessage waits for messages (long polling). Range: 0-20. Values >0 reduce polling costs."
   type        = number
 }
 
 variable "fifo_queue" {
-  description = "Is the SQS queue FIFO?"
+  description = "Whether the queue is FIFO. Guarantees strict ordering and exactly-once delivery."
   type        = bool
 }
 
 variable "content_based_deduplication" {
-  description = "Enable content-based deduplication for FIFO queues"
+  description = "Enable content-based deduplication. Only applies when 'fifo_queue' is true."
   type        = bool
 
   validation {
@@ -57,7 +54,7 @@ variable "content_based_deduplication" {
 }
 
 variable "deduplication_scope" {
-  description = "Specifies whether message deduplication occurs at the message group or queue level"
+  description = "Deduplication level: 'messageGroup' (per group) or 'queue' (entire queue). Only applies when 'fifo_queue' is true."
   type        = string
 
   validation {
@@ -67,19 +64,19 @@ variable "deduplication_scope" {
 }
 
 variable "kms_master_key_id" {
-  description = "KMS key ID for SQS queue server-side encryption. Leave empty to use SQS-managed encryption (SSE-SQS)."
+  description = "KMS key ID for server-side encryption. Set to null to use SQS-managed encryption (SSE-SQS)."
   type        = string
   default     = null
 }
 
 variable "allowed_publishers" {
-  description = "List of SNS topic ARNs allowed to publish to this queue"
+  description = "List of SNS topic ARNs allowed to publish to this queue. Used to generate the queue access policy."
   type        = list(string)
   default     = []
 }
 
 variable "tags" {
-  description = "Additional tags specific to this resource"
+  description = "Additional tags for the SQS queue. Merged with common project tags."
   type        = map(string)
   default     = {}
 }

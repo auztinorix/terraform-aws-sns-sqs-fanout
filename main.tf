@@ -1,5 +1,5 @@
 ################################################################
-# SNS Topic - Event Backbone
+# SNS Topic
 ################################################################
 module "events_topic" {
   source = "./modules/sns"
@@ -13,7 +13,7 @@ module "events_topic" {
 }
 
 ################################################################
-# SQS Queues - Event Consumers
+# SQS Queues
 ################################################################
 module "event_queues" {
   source = "./modules/sqs"
@@ -32,7 +32,7 @@ module "event_queues" {
 }
 
 ################################################################
-# SNS Subscriptions - Fan-out Configuration
+# SNS → SQS Subscriptions
 ################################################################
 resource "aws_sns_topic_subscription" "event_consumers" {
 

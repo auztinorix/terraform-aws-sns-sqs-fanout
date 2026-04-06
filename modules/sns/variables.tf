@@ -1,18 +1,15 @@
-################################################################
-# Amazon SNS Topic Variables
-################################################################
 variable "topic_name" {
-  description = "The name of the SNS topic."
+  description = "Name of the SNS topic. The '.fifo' suffix is appended automatically when 'fifo_topic' is true."
   type        = string
 }
 
 variable "fifo_topic" {
-  description = "Is the SNS topic FIFO?"
+  description = "Whether the topic is FIFO. Enables strict message ordering and deduplication."
   type        = bool
 }
 
 variable "content_based_deduplication" {
-  description = "Enable content-based deduplication for FIFO topics"
+  description = "Enable content-based deduplication. Only applies when 'fifo_topic' is true."
   type        = bool
 
   validation {
@@ -22,12 +19,12 @@ variable "content_based_deduplication" {
 }
 
 variable "kms_master_key_id" {
-  description = "KMS key ID for SNS topic encryption"
+  description = "KMS key ID for topic encryption. Use 'alias/aws/sns' for the AWS managed key."
   type        = string
 }
 
 variable "tracing_config" {
-  description = "Tracing configuration for SNS topic"
+  description = "X-Ray tracing mode. 'PassThrough' propagates existing traces, 'Active' creates new ones."
   type        = string
 
   validation {
@@ -37,7 +34,7 @@ variable "tracing_config" {
 }
 
 variable "fifo_throughput_scope" {
-  description = "Throughput scope for FIFO topics"
+  description = "Throughput scope for FIFO topics. 'MessageGroup' limits per group, 'Topic' applies to the entire topic."
   type        = string
 
   validation {
@@ -47,7 +44,7 @@ variable "fifo_throughput_scope" {
 }
 
 variable "tags" {
-  description = "Additional tags specific to this resource"
+  description = "Additional tags for the SNS topic. Merged with common project tags."
   type        = map(string)
   default     = {}
 }

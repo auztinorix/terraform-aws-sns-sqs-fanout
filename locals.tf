@@ -1,21 +1,18 @@
 locals {
-  # Naming convention: {env}-{project}-{functionality}
-  # Example: dev-shop-orders
+  # Naming convention: {env}-{project}-{functionality} (e.g. dev-shop-orders)
   name_prefix = "${var.env}-${var.project}"
 
-  # Generate consistent names for all resources
   event_names = {
-    # SNS topic name without suffix (added in module)
+    # SNS topic base name — .fifo suffix added by module
     topic = "${local.name_prefix}-${var.functionality}"
 
-    # SQS queue names mapped from input keys
+    # SQS queue names: {env}-{project}-{key}-{functionality}
     queues = {
       for key in keys(var.queues) :
       key => "${local.name_prefix}-${key}-${var.functionality}"
     }
   }
 
-  # Common tags applied to all resources
   common_tags = merge(var.tags, {
     Environment = var.env
     Project     = var.project

@@ -1,5 +1,5 @@
 ################################################################
-# Global Context Variables
+# Global Context
 ################################################################
 variable "aws_profile" {
   description = "AWS CLI profile name from ~/.aws/credentials used to authenticate with AWS"
@@ -48,7 +48,7 @@ variable "tags" {
 }
 
 ################################################################
-# Amazon SNS – Topic Configuration
+# SNS Topic
 ################################################################
 variable "fifo_topic" {
   description = "Whether to create a FIFO SNS topic. FIFO guarantees message ordering and exactly-once delivery."
@@ -101,10 +101,26 @@ variable "content_based_deduplication" {
 }
 
 ################################################################
-# Amazon SQS – Queue Subscriptions Configuration
+# SQS Queues
 ################################################################
 variable "queues" {
-  description = "Map of SQS queue configurations to subscribe to the SNS topic. Each key becomes part of the queue name."
+  description = <<-EOT
+    Map of SQS queue configurations to subscribe to the SNS topic.
+    Each key becomes part of the queue name and must follow naming conventions.
+
+    Attributes:
+      visibility_timeout_seconds  - Invisibility window after read (0-43200s). Default: 30
+      message_retention_seconds   - Retention period (60-1209600s). Default: 345600 (4 days)
+      max_message_size            - Max message size in bytes (1024-262144). Default: 262144 (256KB)
+      delay_seconds               - Delivery delay (0-900s). Default: 0
+      receive_wait_time_seconds   - Long polling wait (0-20s). Default: 0
+      fifo_queue                  - Enable FIFO ordering. Default: false
+      content_based_deduplication - Auto-dedup by message body (FIFO only). Default: false
+      deduplication_scope         - 'queue' or 'messageGroup' (FIFO only). Default: queue
+      filter_policy_scope         - 'MessageAttributes' or 'MessageBody'. Default: MessageBody
+      filter_policy               - SNS subscription filter rules. Default: {}
+      raw_message_delivery        - Deliver raw SNS message without metadata. Default: false
+  EOT
   type = map(object({
     visibility_timeout_seconds  = optional(number, 30)
     message_retention_seconds   = optional(number, 345600)

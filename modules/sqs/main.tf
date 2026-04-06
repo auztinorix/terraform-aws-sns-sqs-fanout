@@ -19,9 +19,7 @@ resource "aws_sqs_queue" "this" {
   })
 }
 
-################################################################
-# SQS Queue Policy - Allow SNS Publish
-################################################################
+# IAM policy: allow SNS to publish
 data "aws_iam_policy_document" "this" {
   count = length(var.allowed_publishers) > 0 ? 1 : 0
 
@@ -44,9 +42,7 @@ data "aws_iam_policy_document" "this" {
   }
 }
 
-################################################################
-# Apply SNS Publish Policy to SQS Queues
-################################################################
+# Attach policy to queue
 resource "aws_sqs_queue_policy" "this" {
   count = length(var.allowed_publishers) > 0 ? 1 : 0
 
