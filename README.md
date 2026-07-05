@@ -101,8 +101,8 @@ terraform apply -var-file="environment-vars/dev.tfvars"
 
 | Herramienta | Versión | Verificar | Link |
 |-------------|---------|-----------| ---- |
-| Terraform | >= 1.14.1 | `terraform --version` |[Instalar](https://developer.hashicorp.com/terraform/install) |
-| AWS CLI | >= 2.0 | `aws --version` | [Instalar](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) |
+| Terraform | 1.14 o superior (versión mayor 1.x) | `terraform --version` |[Instalar](https://developer.hashicorp.com/terraform/install) |
+| AWS CLI | 2.0 o superior | `aws --version` | [Instalar](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) |
 | Cuenta AWS | Activa | `aws sts get-caller-identity` | N/A |
 
 <details>
